@@ -36,16 +36,40 @@ couseRouter.post("/create-course", logger, (req: Request, res: Response) => {
   });
 });
 
-app.get("/", logger, (req: Request, res: Response) => {
-  console.log(req.query);
-  res.send("Hello Wars!");
-});
+app.get(
+  "/",
+  logger,
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      res.send(something);
+    } catch (error) {
+      next(error);
+    }
+  }
+);
 
 app.post("/", logger, (req: Request, res: Response) => {
   console.log(req.body);
-  res.send({
+  res.json({
     message: "successfully data received",
   });
+});
+
+app.all("*", (req: Request, res: Response) => {
+  res.status(400).json({
+    success: false,
+    message: "Route is not found",
+  });
+});
+
+// global error handler
+app.use((error: any, req: Request, res: Response, next: NextFunction) => {
+  if (error) {
+    res.status(400).json({
+      success: false,
+      message: "Something went Wrong!",
+    });
+  }
 });
 
 export default app;
